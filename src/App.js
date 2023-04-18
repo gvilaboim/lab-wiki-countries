@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import "./App.css";
+import React, { useState, useEffect } from 'react';
+import NavBar from "./components/NavBar";
+import CountriesList from "./components/CountriesList";
+import CountryDetails from "./components/CountryDetails";
+import { Route, Routes } from 'react-router-dom';
+
 
 function App() {
+  const [countries, setcountries] = useState()
+
+  useEffect(() => {
+    fetch('https://ih-countries-api.herokuapp.com/countries')
+      .then((response) => response.json())
+      .then((data) => setcountries(data));
+    console.log(countries)
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+      <NavBar />
 
-export default App;
+      <div className="container">
+        <div className="row">
+          {countries && <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <CountriesList countries={countries} />
+            <Routes>
+              <Route path="/:alpha3Code" element={<CountryDetails countries={countries} />} />
+            </Routes>
+          </div>}
+          </div>
+        </div>
+      </div>
+      )
+}
+      export default App;
